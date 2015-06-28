@@ -18,24 +18,28 @@ public class ProtocolBulkWithRestart extends Protocol {
 	}
 	
 	public void simulate(Warden W){
+		reset = true;
 		int n = W.getNumberOfPrisoners();
 		Bulb b = new Bulb();			
 		int numberOfAssistants = (n-1)/bulkSize; //bulkSize was made to be a divisor of n-1 (in main)
 		Prisoner[] p = new Prisoner[n];
-		Stack<Integer> stackForIntegers = new Stack<>();
-		for(int i = 0; i<n; i++){
-			stackForIntegers.add(i);
+		for(int i = 0; i < n; i++){//drones, role: 0
+			p[i] = new Prisoner();
 		}
-		Collections.shuffle(stackForIntegers); //for the sake of randomness
 		int selected = -1;
 		
 		do{
 			if(reset){
-				int j = -1;
 				for(int i = 0; i < n; i++){//drones, role: 0
 					p[i] = new Prisoner();
 				}
-				
+				Stack<Integer> stackForIntegers = new Stack<>();
+				for(int i = 0; i<n; i++){
+					stackForIntegers.add(i);
+				}
+				Collections.shuffle(stackForIntegers); //for the sake of randomness
+		
+				int j = -1;
 				j = stackForIntegers.pop();// 1 HeadCounter, role: 1
 				p[j].setRole(1);
 				
