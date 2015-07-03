@@ -1,10 +1,10 @@
 public class Prisoner {
 	
-	int turnOnsRemaining;	//ennyiszer fogja meg felkapcsolni a lampat
-	int prisonersCounted;	//ennyi rabot szamlalt ossze, meg a drone-ok is csinalhatnak naiv (lucky) szamlalast
-	int timesInYard;		//ennyi alkalommal jart az udvaron
-	int role;				//a rab szerepe, ez a stratégiáknál kerül meghatározásra
-	boolean lastSeenLight;	//milyen allasban volt a lámpa mikor utoljara latta true = ON, false = OFF
+	int turnOnsRemaining;	//How many times will the prisoner turn on the light. May depend on strategy.
+	int prisonersCounted;	//The prisoner knows, that at least this many prisoners visited the yard.
+	int timesInYard;		//The prisoner visited the yard this many times.
+	int role;				//The role of this prisoner, it depends on the strategy.
+	boolean lastSeenLight;	//The state of the light the last time the prisoner has visited the room.
 	
 	public Prisoner(){ 
 		turnOnsRemaining = 1;
