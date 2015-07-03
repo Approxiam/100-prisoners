@@ -1,19 +1,16 @@
-public class ProtocolSingleCounter extends Protocol{
+public class ProtocolSCWithSmartDrones extends Protocol{
 
 	/*
-	 * Brief description of the strategy: 
-	 * The prisoners designate one of them as the counter, the rest of them will be drones.
-	 * Drones turn on the light the very first time they enter the yard with the light off, 
-	 * otherwise they do nothing. Whenever the counter enters the yard with the light on, he/she turns it off.
-	 * If the counter has turned off the light (n-1) times (where n is the number of prisoners),
-	 * then he/she declares victory.
+	 * A modification of the single counter strategy, 
+	 * where even drones count how many transitions they have seen 
+	 * when the light went form being off to being on.
 	 * 
 	 * 	Roles:
 	 *	0: Drone
 	 *	1: Counter
 	 */
 	
-	public ProtocolSingleCounter(){ 
+	public ProtocolSCWithSmartDrones(){ 
 		super("Egy lampaoltogato elore kivalasztva");
 	}
 	
@@ -25,7 +22,7 @@ public class ProtocolSingleCounter extends Protocol{
 			p[i]=new Prisoner();
 		}
 		int selected = W.returnRandom(n);	
-		p[selected].setRole(1);				//Assign the role of the Counter to a randomly selected prisoner.
+		p[0].setRole(1);				//Assign the role of the Counter to a randomly selected prisoner.
 		
 		
 		do{
@@ -41,12 +38,23 @@ public class ProtocolSingleCounter extends Protocol{
 				}
 			}
 			else{																//A drone is selected.
+				if(!p[selected].isLastSeenLight() && b.getLight()){
+					p[selected].count(1);
+					//System.out.println("transition on day" + W.days() + " prisoner " + selected + " counted" + p[selected].getPrisonersCounted());
+				}
 				if(!(b.getLight()) && (p[selected].getTurnOnsRemaining() > 0)){	//If the light is off and the prisoner has't turned it on yet,
 					p[selected].turnON(b);										//then he/she turns it on.
-				}	
+				}
+				p[selected].setLastSeenLight(b.getLight());
+				if(p[selected].getPrisonersCounted() == n-1){		//The counter will not be counted otherwise.
+					p[selected].count(1);
+				}
 			}
-		} while(!(p[selected].getPrisonersCounted() == n));	//Repeat until victory can be declared, this can only happen on a day when the counter visits the yard.
+		} while(!(p[selected].getPrisonersCounted() == n));
 		daysUntilVictory = W.days();
+		if(p[selected].getRole() == 0){
+			System.out.println("A gyozelmet nem a szamlalo hirdette ki, hanem az egyik okos rab.");
+		}
 	}
 
 }

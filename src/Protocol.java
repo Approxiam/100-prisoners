@@ -1,8 +1,8 @@
 public abstract class Protocol {
 
-	int daysUntilVictory;			//a rabok ennyi nap elteltevel szabadulnak
-	int victoryTreshold;			//ennyi nap elteltevel mar minden rab jart az udvaron
-	private String protocolName;	//a strategia neve
+	int daysUntilVictory;			//The day the visiting prisoner declared victory. 
+	int victoryTreshold;			//The first day when every prisoner has been in the yard.
+	private String protocolName;
 	
 	public Protocol(){
 		daysUntilVictory = 0;

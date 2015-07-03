@@ -34,7 +34,7 @@ public class Warden {
 		input.close();
 	}
 	
-	public int nextPrisoner(){
+	public int nextPrisoner(){	//Once the Warden runs out of predetermined prisoners to send, he/she will resort to random selection.
 		int next = -1;
 		if(counter < history.size()){
 			next = history.get(counter);
