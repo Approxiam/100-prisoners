@@ -17,11 +17,12 @@ public class Main {
 			//choose strategy
 			System.out.println("Valaszhato strategiak:"
 					+ "\n1. Egy lampaoltogato"
-					+ "\n2. Dinamikusan valsztott lampaoltogato"
-					+ "\n3. Bulk with Restart"
+					+ "\n2. Egy lampaoltogato, okos rabok"
+					+ "\n3. Dinamikusan valsztott lampaoltogato"
+					+ "\n4. Ketfazisu szamlalas (ujrainditassal)"
 					+ "\n0. Kilepes");
 			System.out.print("Melyik strategiat hasznaljuk? ");
-			while( !(protocolNo>=0 && protocolNo<=3) ){
+			while( !(protocolNo>=0 && protocolNo<=4) ){
 				while(!input.hasNextInt()) {
 					input.next();
 				}
@@ -35,7 +36,7 @@ public class Main {
 			
 			//choose input method
 			System.out.print("Milyen modon valasszuk a rabok sorrendjet?"
-					+ "\n1. Véletlen sorrendben"
+					+ "\n1. Veletlen sorrendben"
 					+ "\n2. Elore meghatarozott sorrendben (fajlbol olvasva)"
 					+ "\n");
 			int selection = 0;
@@ -62,7 +63,7 @@ public class Main {
 			int stage1Length = 0;
 			int stage2Length = 0;
 			int bulkSize = 0;
-			if(protocolNo == 3){
+			if(protocolNo == 4){
 				//stageOneLenght
 				System.out.print("Hany napos legyen az elso szakasz? ");
 				while( !(stage1Length >0) ){
@@ -122,9 +123,11 @@ public class Main {
 					 System.exit(1);
 				case 1: prot = new ProtocolSingleCounter();
 						break;
-				case 2: prot = new ProtocolDynamicCounter();
+				case 2: prot = new ProtocolSCWithSmartDrones();
 						break;
-				case 3: prot = new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
+				case 3: prot = new ProtocolDynamicCounter();
+						break;
+				case 4: prot = new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
 						break;
 			}
 			

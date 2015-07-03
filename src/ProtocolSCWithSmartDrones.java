@@ -15,14 +15,14 @@ public class ProtocolSCWithSmartDrones extends Protocol{
 	}
 	
 	public void simulate(Warden W){
-		int n = W.getNumberOfPrisoners();	//Initial setup
+		int n = W.getNumberOfPrisoners();
 		Bulb b = new Bulb();			
 		Prisoner[] p = new Prisoner[n];	
 		for(int i = 0; i < n; i++){
 			p[i]=new Prisoner();
 		}
 		int selected = W.returnRandom(n);	
-		p[0].setRole(1);				//Assign the role of the Counter to a randomly selected prisoner.
+		p[0].setRole(1);				//Assign the role of the Counter.
 		
 		
 		do{
@@ -40,13 +40,12 @@ public class ProtocolSCWithSmartDrones extends Protocol{
 			else{																//A drone is selected.
 				if(!p[selected].isLastSeenLight() && b.getLight()){
 					p[selected].count(1);
-					//System.out.println("transition on day" + W.days() + " prisoner " + selected + " counted" + p[selected].getPrisonersCounted());
 				}
-				if(!(b.getLight()) && (p[selected].getTurnOnsRemaining() > 0)){	//If the light is off and the prisoner has't turned it on yet,
+				if(!(b.getLight()) && (p[selected].getTurnOnsRemaining() > 0)){	//If the light is off and the prisoner hasn't turned it on yet,
 					p[selected].turnON(b);										//then he/she turns it on.
 				}
 				p[selected].setLastSeenLight(b.getLight());
-				if(p[selected].getPrisonersCounted() == n-1){		//The counter will not be counted otherwise.
+				if(p[selected].getPrisonersCounted() == n-1){		//The counter wouldn't be counted otherwise.
 					p[selected].count(1);
 				}
 			}
