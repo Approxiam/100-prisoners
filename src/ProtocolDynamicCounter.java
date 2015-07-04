@@ -3,13 +3,13 @@ public class ProtocolDynamicCounter extends Protocol{
 	/*
 	 * Brief description of the strategy: 
 	 * The strategy is similar to the ProtocolSingleCounter one, 
-	 * but the selection method for the counter is different.
-	 * The counter is selected during the first n days of captivity (where n is the number of prisoners).
-	 * The first person to visit the yard for the second time is going to be the counter, 
-	 * he/she turns on the light and counts k-1 prisoners (where k is the day he was selected as the counter).
+	 * the difference lies in the method of selecting the counter 
+	 * who is assigned during the first n days of captivity (where n is the number of prisoners).
+	 * Generally, the first person to visit the yard for the second time is to be the counter, 
+	 * his/her task is to turn on the light and count k-1 prisoners (where k is the day he was selected as the counter).
 	 * The light remains on until day n, letting people know that the counter has been selected.
 	 * From day n+1 the single counter protocol runs, but everyone who visited the yard and seen the light off
-	 * do nothing. 
+	 * does nothing. 
 	 * 
 	 * Roles:
 	 *	0: Drone
@@ -45,7 +45,7 @@ public class ProtocolDynamicCounter extends Protocol{
 			}
 		}
 		
-		if(!b.getLight()){				//If a counter hasn't been found during the selection rounds, then declare victory!
+		if(!b.getLight()){	//If the counter hasn't been assigned during the selection rounds, then declare victory!
 			daysUntilVictory = W.days();
 		} else {
 			p[selected].turnOFF(b);
