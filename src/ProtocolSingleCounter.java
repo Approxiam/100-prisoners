@@ -2,7 +2,7 @@ public class ProtocolSingleCounter extends Protocol{
 
 	/*
 	 * Brief description of the strategy: 
-	 * The prisoners designate one of them as the counter, the rest of them will be drones.
+	 * The prisoners designate one of themselves as the counter, and all the rest become drones.
 	 * Drones turn on the light the very first time they enter the yard with the light off, 
 	 * otherwise they do nothing. Whenever the counter enters the yard with the light on, he/she turns it off.
 	 * If the counter has turned off the light (n-1) times (where n is the number of prisoners),
@@ -25,7 +25,7 @@ public class ProtocolSingleCounter extends Protocol{
 			p[i]=new Prisoner();
 		}
 		int selected = W.returnRandom(n);	
-		p[selected].setRole(1);				//Assign the role of the Counter to a randomly selected prisoner.
+		p[selected].setRole(1);		//Assign the role of the Counter to a randomly selected prisoner.
 		
 		
 		do{
@@ -40,12 +40,12 @@ public class ProtocolSingleCounter extends Protocol{
 					p[selected].turnOFF(b);		//and turns the light off.
 				}
 			}
-			else{																//A drone is selected.
-				if(!(b.getLight()) && (p[selected].getTurnOnsRemaining() > 0)){	//If the light is off and the prisoner has't turned it on yet,
-					p[selected].turnON(b);										//then he/she turns it on.
+			else{	//A drone is selected.
+				if(!(b.getLight()) && (p[selected].getTurnOnsRemaining() > 0)){	//If the light is off and the prisoner hasn't turned it on yet,
+					p[selected].turnON(b);					//then he/she turns it on.
 				}	
 			}
-		} while(!(p[selected].getPrisonersCounted() == n));	//Repeat until victory can be declared, this can only happen on a day when the counter visits the yard.
+		} while(!(p[selected].getPrisonersCounted() == n));	//Repeat until victory can be declared, this can only happen when the counter visits the yard.
 		daysUntilVictory = W.days();
 	}
 
