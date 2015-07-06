@@ -2,8 +2,8 @@ public class ProtocolSCWithSmartDrones extends Protocol{
 
 	/*
 	 * A modification of the single counter strategy, 
-	 * where even drones count how many transitions they have seen 
-	 * when the light went form being off to being on.
+	 * in which even the drones count how many transitions they have seen, 
+	 * where each transition refers to a change in the bulb's state from being turned off to on.
 	 * 
 	 * 	Roles:
 	 *	0: Drone
@@ -26,7 +26,7 @@ public class ProtocolSCWithSmartDrones extends Protocol{
 		
 		
 		do{
-			selected = W.nextPrisoner();	//Select the next prisoner, that visits the yard.
+			selected = W.nextPrisoner();	//Select the next prisoner that visits the yard.
 			if(p[selected].getTimesInYard() == 0){
 				victoryTreshold = W.days();
 			}
@@ -37,7 +37,7 @@ public class ProtocolSCWithSmartDrones extends Protocol{
 					p[selected].turnOFF(b);		//and turns the light off.
 				}
 			}
-			else{																//A drone is selected.
+			else{		//A drone is selected.
 				if(!p[selected].isLastSeenLight() && b.getLight()){
 					p[selected].count(1);
 				}
