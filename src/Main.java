@@ -20,9 +20,10 @@ public class Main {
 					+ "\n2. Egy lampaoltogato, okos rabok"
 					+ "\n3. Dinamikusan valsztott lampaoltogato"
 					+ "\n4. Ketfazisu szamlalas (ujrainditassal)"
+					+ "\n5. Ketfazisu szamlalas"
 					+ "\n0. Kilepes");
 			System.out.print("Melyik strategiat hasznaljuk? ");
-			while( !(protocolNo>=0 && protocolNo<=4) ){
+			while( !(protocolNo>=0 && protocolNo<=5) ){
 				while(!input.hasNextInt()) {
 					input.next();
 				}
@@ -63,7 +64,7 @@ public class Main {
 			int stage1Length = 0;
 			int stage2Length = 0;
 			int bulkSize = 0;
-			if(protocolNo == 4){
+			if(protocolNo >= 4){
 				//stageOneLenght
 				System.out.print("Hany napos legyen az elso szakasz? ");
 				while( !(stage1Length >0) ){
@@ -128,6 +129,8 @@ public class Main {
 				case 3: prot = new ProtocolDynamicCounter();
 						break;
 				case 4: prot = new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
+						break;
+				case 5: prot = new ProtocolBulkWithLoop(stage1Length, stage2Length, bulkSize);
 						break;
 			}
 			

@@ -17,7 +17,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 	public boolean reset = true;
 	
 	public ProtocolBulkWithLoop(int stageOneLength, int stageTwoLength, int bulkSize){ 
-		super("BulkWithRestart-ReadyToBeNamed");
+		super("Ketfazisu szamlalas");
 		this.stageOneLength = stageOneLength;
 		this.stageTwoLength = stageTwoLength;
 		cycleLength = this.stageOneLength + this.stageTwoLength;
