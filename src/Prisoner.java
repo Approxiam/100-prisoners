@@ -1,10 +1,10 @@
 public class Prisoner {
 	
-	int turnOnsRemaining;	//How many times will the prisoner turn on the light. May depend on strategy.
+	int turnOnsRemaining;	//The number of times the prisoner will/should turn on the light. May depend on strategy.
 	int prisonersCounted;	//The prisoner knows, that at least this many prisoners visited the yard.
-	int timesInYard;		//The prisoner visited the yard this many times.
-	int role;				//The role of this prisoner, it depends on the strategy.
-	boolean lastSeenLight;	//The state of the light the last time the prisoner has visited the room.
+	int timesInYard;	//The prisoner visited the yard this many times.
+	int role;		//The role of this prisoner. Depends on strategy.
+	boolean lastSeenLight;	//The state of the light the last time the prisoner visited the room.
 	
 	public Prisoner(){ 
 		turnOnsRemaining = 1;
