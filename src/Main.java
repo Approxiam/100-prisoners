@@ -49,14 +49,26 @@ public class Main {
 			if(selection == 1) {
 				//choose number of prisoners
 				System.out.print("Hany rab legyen? ");
-				while(!input.hasNextInt()) {
-					input.next();
+				W = new Warden(0);
+				while( !(W.getNumberOfPrisoners()>0) ){
+					while(!input.hasNextInt()) {
+						input.next();
+					}
+					W = new Warden(input.nextInt());
 				}
-				W = new Warden(input.nextInt());
 			} else {
+				numberApplied = 1; //initialize value
 				//choose input file name
-				System.out.print("Mi a fajl neve? ");
-				W = new Warden(input.next());	
+				while(true){
+					System.out.print("Mi a fajl neve? ");
+					try{
+						W = new Warden(input.next());
+						break;
+					}
+					catch(FileNotFoundException e){
+						System.out.print("Rossz fajlnev! Fajl neve ujra: ");
+					}
+				}	
 			}
 			
 			//specialize for 3rd protocol aka BulkWithRestart
@@ -66,7 +78,7 @@ public class Main {
 			if(protocolNo == 4){
 				//stageOneLenght
 				System.out.print("Hany napos legyen az elso szakasz? ");
-				while( !(stage1Length >0) ){
+				while( !(stage1Length >1) ){
 					while(!input.hasNextInt()) {
 						input.next();
 					}
@@ -74,7 +86,7 @@ public class Main {
 				}
 				//stageTwoLength
 				System.out.print("Hany napos legyen a masodik szakasz? ");
-				while( !(stage2Length >0) ){
+				while( !(stage2Length >1) ){
 					while(!input.hasNextInt()) {
 						input.next();
 					}
