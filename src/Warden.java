@@ -15,6 +15,9 @@ public class Warden {
 	}
 
 	public Warden(List<Integer> history) {
+		if (history.isEmpty()) {
+			throw new IllegalArgumentException("Cannot determine number of prisoners from an empty history.");
+		}
 		this.random = new Random();
 		this.history = history;
 		this.counter = 0;
