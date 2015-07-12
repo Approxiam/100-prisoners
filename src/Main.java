@@ -1,165 +1,141 @@
-import java.util.ArrayList;
-import java.util.Scanner;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-	private static int numberApplied = 0;
-	private static int protocolNo = 0;
-	public static Warden W;
-	public static Scanner input = new Scanner(System.in);
-	
-	public static void main(String[] args) throws IOException {
-		while( true ){
-			//defining default values
-			numberApplied = -1;
-			protocolNo = -1;
-			
-			//choose strategy
-			System.out.println("Valaszhato strategiak:"
-					+ "\n1. Egy lampaoltogato"
-					+ "\n2. Egy lampaoltogato, okos rabok"
-					+ "\n3. Dinamikusan valsztott lampaoltogato"
-					+ "\n4. Ketfazisu szamlalas (ujrainditassal)"
-					+ "\n0. Kilepes");
-			System.out.print("Melyik strategiat hasznaljuk? ");
-			while( !(protocolNo>=0 && protocolNo<=4) ){
-				while(!input.hasNextInt()) {
-					input.next();
-				}
-				protocolNo = input.nextInt();
+	public Scanner input = new Scanner(System.in);
+
+	public void run(InputStream in) {
+		input = new Scanner(in);
+		while (true) {
+			int protocolNo = chooseStrategy();
+			if (protocolNo == 0) {
+				System.exit(0); // terminate with success (user asked for it)
 			}
-			
-			//exit
-			if(protocolNo == 0){ 
-				System.exit(1);
-			}	
-			
-			//choose input method
-			System.out.print("Milyen modon valasszuk a rabok sorrendjet?"
-					+ "\n1. Veletlen sorrendben"
-					+ "\n2. Elore meghatarozott sorrendben (fajlbol olvasva)"
-					+ "\n");
-			int selection = 0;
-			while( !(selection == 1 || selection == 2)){
-				while(!input.hasNextInt()) {
-					input.next();
-				}
-				selection = input.nextInt();
-			}
-			if(selection == 1) {
-				//choose number of prisoners
-				System.out.print("Hany rab legyen? ");
-				W = new Warden(0);
-				while( !(W.getNumberOfPrisoners()>0) ){
-					while(!input.hasNextInt()) {
-						input.next();
-					}
-					W = new Warden(input.nextInt());
-				}
-			} else {
-				numberApplied = 1; //initialize value
-				//choose input file name
-				while(true){
-					System.out.print("Mi a fajl neve? ");
-					try{
-						W = new Warden(input.next());
-						break;
-					}
-					catch(FileNotFoundException e){
-						System.out.print("Rossz fajlnev! Fajl neve ujra: ");
-					}
-				}	
-			}
-			
-			//specialize for 3rd protocol aka BulkWithRestart
-			int stage1Length = 0;
-			int stage2Length = 0;
-			int bulkSize = 0;
-			if(protocolNo == 4){
-				//stageOneLenght
-				System.out.print("Hany napos legyen az elso szakasz? ");
-				while( !(stage1Length >1) ){
-					while(!input.hasNextInt()) {
-						input.next();
-					}
-					stage1Length = input.nextInt();
-				}
-				//stageTwoLength
-				System.out.print("Hany napos legyen a masodik szakasz? ");
-				while( !(stage2Length >1) ){
-					while(!input.hasNextInt()) {
-						input.next();
-					}
-					stage2Length = input.nextInt();
-				}
-				//bulkSize
-				System.out.print("Mekkora lepesekben szamoljon a foszamlalo? ");
-					//preparations
-					ArrayList<Integer> divisors = new ArrayList<>();
-					divisors.add(1);
-					int n = W.getNumberOfPrisoners();
-					for(int i = 2; i<= n/2; i++){
-						if( (n-1)%i == 0 ){
-							divisors.add(i);
-						}
-					}
-					divisors.add(n-1);
-					System.out.println(divisors);
-					/*alternative:
-					 * for( int d : divisors){
-						System.out.print(d + ", ");
-					}*/
-				while( !(divisors.contains(bulkSize)) ){
-					while(!input.hasNextInt()) {
-						input.next();
-					}
-					bulkSize = input.nextInt();
-				}
-			}
-			
-			
-			//choose number applied
-			System.out.print("Hanyszor alkalmazzuk? ");
-			while(!input.hasNextInt()) {
-				input.next();
-			}
-			numberApplied = input.nextInt();
-			
-			double sum = 0;
-			double min = Long.MAX_VALUE;
-			double max = Long.MIN_VALUE;
-			
-			Protocol prot;
-			switch(protocolNo) {
-				default: System.out.println("Nem ertelmezheto protokoll"); // eleg elegans-e?
-					 System.exit(1);
-				case 1: prot = new ProtocolSingleCounter();
-						break;
-				case 2: prot = new ProtocolSCWithSmartDrones();
-						break;
-				case 3: prot = new ProtocolDynamicCounter();
-						break;
-				case 4: prot = new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
-						break;
-			}
-			
-			for(int i = 0; i < numberApplied; i++){
-					prot.simulate(W);
-					int specday = prot.getDaysUntilVictory();
-					if(specday < min){
-						min = specday;
-						}
-					if(specday > max){
-						max = specday;
-						}
-					sum += specday;
-					W.eraseMemory();
-			}
-			
-			System.out.println("Atlag:   " + sum/numberApplied + " nap, azaz " + sum/(numberApplied*365) + " ev");
-			System.out.println("Minimum: " + min + " nap, azaz " + min/365 + " ev");
-			System.out.println("Maximum: " + max + " nap, azaz " + max/365 + " ev");
+			Warden warden = createWarden();
+			Protocol protocol = createProtocol(protocolNo, warden.getNumberOfPrisoners());
+			int iterationCount = warden.hasPredeterminedHistory()? 1 : getIterationCount();
+
+			SimulationResult sim = Protocol.runSimulation(warden, protocol, iterationCount);
+			System.out.println("Atlag:   " + sim.getAvgDays() + " nap, azaz " + sim.getAvgYears() + " ev");
+			System.out.println("Minimum: " + sim.getMinDays() + " nap, azaz " + sim.getMinYears() + " ev");
+			System.out.println("Maximum: " + sim.getMaxDays() + " nap, azaz " + sim.getMaxYears() + " ev");
 		}
 	}
 
+	private int chooseStrategy() {
+		return readIntBetween("Valaszhato strategiak:"
+				+ "\n1. Egy lampaoltogato"
+				+ "\n2. Egy lampaoltogato, okos rabok"
+				+ "\n3. Dinamikusan valasztott lampaoltogato"
+				+ "\n4. Ketfazisu szamlalas (ujrainditassal)"
+				+ "\n0. Kilepes"
+				+ "\nMelyik strategiat hasznaljuk?", 0, 4);
+	}
+
+	private Warden createWarden() {
+		int selection = readIntBetween("Rabok sorrendje:"
+				+ "\n1. Veletlen sorrendben"
+				+ "\n2. Elore meghatarozott sorrendben (fajlbol olvasva)"
+				+ "\nMilyen modon valasszuk a rabok sorrendjet?", 1, 2);
+		if (selection == 1) {
+			return createWardenFromCount();
+		} else {
+			return createWardenFromFile();
+		}
+	}
+
+	private Warden createWardenFromCount() {
+		int prisonerCount = readIntBetween("Hany rab legyen?", 1, Integer.MAX_VALUE);
+		return new Warden(prisonerCount);
+	}
+
+	private Warden createWardenFromFile() {
+		while (true) {
+			System.out.print("Mi a fajl neve? ");
+			try {
+				String fileName = input.next();
+				List<Integer> history = readFile(fileName);
+				return new Warden(history);
+			} catch (FileNotFoundException e) {
+				System.err.print("Rossz fajlnev! Fajl neve ujra: ");
+			} catch (IOException e) {
+				System.err.print("Rossz fajl! Fajl neve ujra: ");
+			}
+		}
+	}
+
+	private Protocol createProtocol(int protocolNo, int n) {
+		switch (protocolNo) {
+			case 1:
+				return new ProtocolSingleCounter();
+			case 2:
+				return new ProtocolSCWithSmartDrones();
+			case 3:
+				return new ProtocolDynamicCounter();
+			case 4: {
+				int stage1Length = readIntBetween("Hany napos legyen az elso szakasz?", 1, Integer.MAX_VALUE);
+				int stage2Length = readIntBetween("Hany napos legyen a masodik szakasz?", 1, Integer.MAX_VALUE);
+				int bulkSize = readIntFrom("Mekkora lepesekben szamoljon a foszamlalo?", getDivisors(n));
+				return new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
+			}
+			default:
+				throw new IllegalArgumentException("Nem ertelmezheto protokoll: " + protocolNo);
+		}
+	}
+
+	private static List<Integer> getDivisors(int n) {
+		List<Integer> divisors = new ArrayList<>();
+		divisors.add(1);
+		for (int i = 2; i <= n / 2; i++) {
+			if ((n - 1) % i == 0) {
+				divisors.add(i);
+			}
+		}
+		divisors.add(n - 1);
+		return divisors;
+	}
+
+	private int getIterationCount() {
+		return readIntBetween("Hanyszor alkalmazzuk?", 0, Integer.MAX_VALUE);
+	}
+
+	private int readIntBetween(String message, int min, int max) {
+		System.out.println(message + " [" + min + " - " + max + "]: ");
+		int result;
+		do {
+			while (!input.hasNextInt()) {
+				input.next();
+			}
+			result = input.nextInt();
+		} while (!(min <= result && result <= max));
+		return result;
+	}
+
+	private int readIntFrom(String message, List<Integer> divisors) {
+		System.out.println(message + " " + divisors + ": ");
+		int result;
+		do {
+			while (!input.hasNextInt()) {
+				input.next();
+			}
+			result = input.nextInt();
+		} while (!divisors.contains(result));
+		return result;
+	}
+
+	private static List<Integer> readFile(String source) throws IOException {
+		ArrayList<Integer> history = new ArrayList<>();
+		try (BufferedReader input = new BufferedReader(new FileReader(source))) {
+			String line;
+			while ((line = input.readLine()) != null) {
+				int prisoner = Integer.parseInt(line);
+				history.add(prisoner);
+			}
+		}
+		return history;
+	}
+
+	public static void main(String[] args) {
+		new Main().run(System.in);
+	}
 }
