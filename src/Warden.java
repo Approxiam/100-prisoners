@@ -1,87 +1,60 @@
-import java.io.*;
-import java.util.Random;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Warden {
 
-	private String name;
-	private Random random;
-	private ArrayList<Integer> history;
+	private final Random random;
+	private final List<Integer> history;
 	private int counter;
-	private int numberOfPrisoners;
-	
-	public Warden(int n){
-		random = new Random();
-		history = new ArrayList<>();
-		counter = 0;
-		numberOfPrisoners = n;
+	private final int numberOfPrisoners;
+
+	public Warden(int n) {
+		this.random = new Random();
+		this.history = new ArrayList<>();
+		this.counter = 0;
+		this.numberOfPrisoners = n;
 	}
-	
-	public Warden(String source) throws IOException {
-		random = new Random();
-		history = new ArrayList<>();
-		counter = 0;
-		numberOfPrisoners = 0;
-		BufferedReader input = new BufferedReader(new FileReader(source));
-		String line = null;
-		while((line = input.readLine()) != null){
-			int prisoner = Integer.parseInt(line); 
-			history.add(prisoner);
-			if(prisoner > numberOfPrisoners - 1){
-				numberOfPrisoners = prisoner + 1;
-			}
-		}
-		input.close();
+
+	public Warden(List<Integer> history) {
+		this.random = new Random();
+		this.history = history;
+		this.counter = 0;
+		this.numberOfPrisoners = Collections.max(history) + 1;
 	}
-	
-	public int nextPrisoner(){	//Once the Warden runs out of predetermined prisoners to send, he/she will resort to random selection.
-		int next = -1;
-		if(counter < history.size()){
+
+	public int pickNextPrisoner() {
+		int next;
+		if (hasPredeterminedHistory()) {
 			next = history.get(counter);
-		} 
-		else {
-			next = random.nextInt(numberOfPrisoners);
+		} else { // once the Warden runs out of predetermined prisoners to send, they will resort to random selection
+			next = pickRandomPrisoner();
 			history.add(next);
 		}
 		counter++;
 		return next;
 	}
-	
-	public void eraseMemory(){
+
+	public void eraseMemory() {
 		history.clear();
 		counter = 0;
 	}
-	
-	public int days(){
-		return counter;
-	}
-	
-	public int returnRandom(int max){
-		return random.nextInt(max);  
+
+	public boolean hasPredeterminedHistory() {
+		return counter < history.size();
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getCounter() {
+	public int daysPassed() {
 		return counter;
 	}
 
-	public void setCounter(int counter) {
-		this.counter = counter;
+	public int pickRandomPrisoner() {
+		return random.nextInt(numberOfPrisoners);
 	}
 
 	public int getNumberOfPrisoners() {
 		return numberOfPrisoners;
 	}
 
-	public void setNumberOfPrisoners(int numberOfPrisoners) {
-		this.numberOfPrisoners = numberOfPrisoners;
-	} 
-	
+	public Random getRandom() {
+		return random;
+	}
 }
