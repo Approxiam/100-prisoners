@@ -17,6 +17,7 @@ public class ProtocolBulkWithRestart extends Protocol {
 		this.stageOneLength = stageOneLength;
 		this.cycleLength = stageOneLength + stageTwoLength;
 		this.bulkSize = bulkSize;
+		// FIXME add if(condition) throw IllegalArgumentException() to validate ALL parameters
 	}
 
 	public void simulate(Warden warden) {
@@ -56,8 +57,10 @@ public class ProtocolBulkWithRestart extends Protocol {
 
 	private void reset(Warden warden, Prisoner[] prisoners) {
 		int n = warden.getNumberOfPrisoners();
-		assert (n - 1) % bulkSize == 0 : "bulkSize=" + bulkSize + " is not the divisor of n-1=" + (n - 1);
-		final int numberOfAssistants = (n - 1) / bulkSize; // bulkSize was made to be a divisor of n-1 at input
+		if ((n - 1) % bulkSize != 0) {
+			throw new IllegalArgumentException("bulkSize=" + bulkSize + " is not the divisor of n-1=" + (n - 1));
+		}
+		final int numberOfAssistants = (n - 1) / bulkSize;
 		for (int i = 0; i < prisoners.length; i++) {
 			prisoners[i] = new Prisoner();
 			prisoners[i].setRole(ROLE_DRONE);

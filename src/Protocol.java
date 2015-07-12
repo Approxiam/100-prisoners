@@ -39,7 +39,7 @@ public abstract class Protocol {
 	}
 
 	public static SimulationResult runSimulation(Warden warden, Protocol protocol, int iterationCount) {
-		SimulationResult result = new SimulationResult(iterationCount);
+		SimulationResult result = new SimulationResult();
 
 		for (int i = 0; i < iterationCount; i++) {
 			protocol.simulate(warden);

@@ -75,24 +75,12 @@ public class Main {
 			case 4: {
 				int stage1Length = readIntBetween("Hany napos legyen az elso szakasz?", 1, Integer.MAX_VALUE);
 				int stage2Length = readIntBetween("Hany napos legyen a masodik szakasz?", 1, Integer.MAX_VALUE);
-				int bulkSize = readIntFrom("Mekkora lepesekben szamoljon a foszamlalo?", getDivisors(n));
+				int bulkSize = readIntFrom("Mekkora lepesekben szamoljon a foszamlalo?", Utilities.getDivisors(n));
 				return new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
 			}
 			default:
 				throw new IllegalArgumentException("Nem ertelmezheto protokoll: " + protocolNo);
 		}
-	}
-
-	private static List<Integer> getDivisors(int n) {
-		List<Integer> divisors = new ArrayList<>();
-		divisors.add(1);
-		for (int i = 2; i <= n / 2; i++) {
-			if ((n - 1) % i == 0) {
-				divisors.add(i);
-			}
-		}
-		divisors.add(n - 1);
-		return divisors;
 	}
 
 	private int getIterationCount() {
@@ -137,5 +125,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		new Main().run(System.in);
+		//Protocol.runSimulation(new Warden(10), new ProtocolBulkWithRestart(2, 4, 3), 1000);
+		//Protocol.runSimulation(new Warden(Arrays.asList(2, 3, 1, 7, 6, 4)), new ProtocolSingleCounter(), 1);
+		//SwingGUI.main(args);
 	}
 }
