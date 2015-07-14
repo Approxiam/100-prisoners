@@ -13,7 +13,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 	int stageOneLength;
 	int stageTwoLength;
 	public int cycleLength;
-	public int bulkSize; //TODO should be a divisor of 'numberofprisoners-1', should be done in main
+	public int bulkSize;
 	public boolean reset = true;
 	
 	public ProtocolBulkWithLoop(int stageOneLength, int stageTwoLength, int bulkSize){ 
@@ -84,6 +84,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 				if(p[selected].getRole() == -1){ //HeadCounter
 					if(b.getLight()){
 						p[selected].setTurnOnsRemaining(p[selected].getTurnOnsRemaining() + 1);
+						p[selected].turnOFF(b);
 					} else {
 						p[selected].doNothing();
 					}
@@ -120,6 +121,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 					if(b.getLight()){
 						p[selected].turnOFF(b);
 						p[selected].setTurnOnsRemaining(p[selected].getTurnOnsRemaining() + 1);
+						p[selected].setPrisonersCounted( p[selected].getPrisonersCounted() + 1);
 					}
 					else {
 						p[selected].doNothing();
@@ -169,6 +171,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 					if(b.getLight()){
 						p[selected].count(bulkSize);
 						p[selected].setRole(p[selected].getRole() + 1);
+						p[selected].setTurnOnsRemaining( p[selected].getTurnOnsRemaining() + 1 );
 						p[selected].turnOFF(b);
 					}
 				}
