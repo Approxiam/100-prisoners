@@ -13,7 +13,7 @@ public class ProtocolBulkWithRestart extends Protocol {
 	private final int bulkSize;
 
 	public ProtocolBulkWithRestart(int stageOneLength, int stageTwoLength, int bulkSize) {
-		super("BulkWithRestart-ReadyToBeNamed");
+		super("Ketfazisu szamlalas (ujrainditassal)");
 		this.stageOneLength = stageOneLength;
 		this.cycleLength = stageOneLength + stageTwoLength;
 		this.bulkSize = bulkSize;
@@ -42,7 +42,7 @@ public class ProtocolBulkWithRestart extends Protocol {
 			prisoner.visitYard();
 
 			if ((warden.daysPassed() % cycleLength > 0) && (warden.daysPassed() % cycleLength < stageOneLength)) {
-				doFirstStage(light, prisoner); // except for tha last day
+				doFirstStage(light, prisoner); // except for the last day
 			} else if (warden.daysPassed() % cycleLength == stageOneLength) {
 				doFirstStageLastDay(light, prisoner);
 			} else if (warden.daysPassed() % cycleLength != 0) {
@@ -109,17 +109,14 @@ public class ProtocolBulkWithRestart extends Protocol {
 	private void doFirstStageLastDay(Bulb light, Prisoner prisoner) {
 		switch (prisoner.getRole()) {
 			case ROLE_HEAD_COUNTER:
-				prisoner.doNothing();
+				prisoner.turnOff(light);
 				break;
 			case ROLE_ASSISTANT_COUNTER:
-				if (light.isOn() && prisoner.getCounted() == bulkSize - 1) {
+				if (light.isOn() && prisoner.getCounted() >= bulkSize - 1) {
 					prisoner.setCounted(0);
-				} else if (light.isOff() && prisoner.getCounted() == bulkSize) { // TODO light-check needed?
+				} else if (prisoner.getCounted() >= bulkSize) {
 					prisoner.turnOn(light);
 					prisoner.setCounted(0);
-				} else if (light.isOn()) {
-					prisoner.turnOff(light);
-					prisoner.count(1);
 				} else {
 					prisoner.doNothing();
 				}

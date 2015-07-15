@@ -10,10 +10,9 @@ import javax.swing.*;
 
 import static javax.swing.BorderFactory.*;
 
-// FIXME change all default values to be sensible for 100 prisoners
 public class SwingGUI extends JFrame {
 	private final JFormattedTextField txtPrisonerCount = new JFormattedTextField(100);
-	private final JFormattedTextField txtIterationCount = new JFormattedTextField(1000);
+	private final JFormattedTextField txtIterationCount = new JFormattedTextField(10000);
 	private final JTextArea txtPrisonerHistory = new JTextArea("0,1,2,3,4,5,6,7,8,9", 6, 30);
 	private final JLabel lblCount = new JLabel();
 	private final JLabel lblTargetCount = new JLabel();
@@ -28,9 +27,9 @@ public class SwingGUI extends JFrame {
 	private final JButton btnRun = new JButton("Futtat");
 	private final JButton btnStop = new JButton("Leállít");
 	private BackgroundSimulator simulator;
-	private final JFormattedTextField txtStage1Length = new JFormattedTextField(40);
-	private final JFormattedTextField txtStage2Length = new JFormattedTextField(40);
-	private final JFormattedTextField txtBulkSize = new JFormattedTextField(33);
+	private final JFormattedTextField txtStage1Length = new JFormattedTextField(2600);
+	private final JFormattedTextField txtStage2Length = new JFormattedTextField(2700);
+	private final JFormattedTextField txtBulkSize = new JFormattedTextField(11);
 	private final ButtonGroup modStrategies = new ButtonGroup();
 	private final ButtonGroup modWardenParams = new ButtonGroup();
 	private final CardLayout modSpecialParams = new CardLayout();
@@ -71,7 +70,7 @@ public class SwingGUI extends JFrame {
 	};
 
 	public SwingGUI() throws HeadlessException {
-		super("100 rab és a lámpa");
+		super("100 rab és egy lámpa");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		JPanel left = new JPanel();
@@ -115,7 +114,8 @@ public class SwingGUI extends JFrame {
 			strategies.add(createStrategy("Egy lámpaoltogató", VK_L, ProtocolSingleCounter.class));
 			strategies.add(createStrategy("Egy lámpaoltogató, okos rabok", VK_O, ProtocolSCWithSmartDrones.class));
 			strategies.add(createStrategy("Dinamikusan választott lámpaoltogató", VK_D, ProtocolDynamicCounter.class));
-			strategies.add(createStrategy("Kétfázisú számlálás (újraindítással)", VK_K, ProtocolBulkWithRestart.class));
+			strategies.add(createStrategy("Kétfázisú számlálás", VK_K, ProtocolBulkWithLoop.class));
+			strategies.add(createStrategy("Kétfázisú számlálás (újraindítással)", VK_U, ProtocolBulkWithRestart.class));
 
 			((JRadioButton)strategies.getComponent(0)).setSelected(true);
 		}
@@ -236,8 +236,8 @@ public class SwingGUI extends JFrame {
 		uiSpecialParams.add(new JLabel(""), ProtocolSingleCounter.class.getName());
 		uiSpecialParams.add(new JLabel(""), ProtocolDynamicCounter.class.getName());
 		uiSpecialParams.add(new JLabel(""), ProtocolSCWithSmartDrones.class.getName());
+		uiSpecialParams.add(bulkProtocolUI, ProtocolBulkWithLoop.class.getName());
 		uiSpecialParams.add(bulkProtocolUI, ProtocolBulkWithRestart.class.getName());
-		//uiSpecialParams.add(bulkProtocolUI, ProtocolBulkWithLoop.class.getName());
 
 		return uiSpecialParams;
 	}
@@ -302,6 +302,11 @@ public class SwingGUI extends JFrame {
 			protocol = new ProtocolSCWithSmartDrones();
 		} else if (ProtocolDynamicCounter.class.getName().equals(selectedStrategyName)) {
 			protocol = new ProtocolDynamicCounter();
+		} else if (ProtocolBulkWithLoop.class.getName().equals(selectedStrategyName)) {
+			int stage1Length = (int)txtStage1Length.getValue();
+			int stage2Length = (int)txtStage2Length.getValue();
+			int bulkSize = (int)txtBulkSize.getValue();
+			protocol = new ProtocolBulkWithLoop(stage1Length, stage2Length, bulkSize);
 		} else if (ProtocolBulkWithRestart.class.getName().equals(selectedStrategyName)) {
 			int stage1Length = (int)txtStage1Length.getValue();
 			int stage2Length = (int)txtStage2Length.getValue();
