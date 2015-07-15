@@ -1,7 +1,7 @@
 This repository contains code to simulate the _100 Prisoners and a Light Bulb_ problem.
 
 # Problem
-There's prison where the yard has a light that can be turned on or off by the prisoners. There are 100 prisoners in solitary confinement which means that they can't interact with each other nor can have any sensory information coming from the outside.
+There's a prison where the yard has a light that can be turned on or off by the prisoners. There are 100 prisoners in solitary confinement which means that they can't interact with each other nor can have any sensory information coming from the outside.
 
 At the time of imprisonment the light bulb is turned off. Every day the warden picks a random prisoner with equal probability and lets them visit the yard where they can toggle the light if they want to.
 

@@ -29,8 +29,9 @@ public class Main {
 				+ "\n2. Egy lampaoltogato, okos rabok"
 				+ "\n3. Dinamikusan valasztott lampaoltogato"
 				+ "\n4. Ketfazisu szamlalas (ujrainditassal)"
+				+ "\n5. Ketfazisu szamlalas"
 				+ "\n0. Kilepes"
-				+ "\nMelyik strategiat hasznaljuk?", 0, 4);
+				+ "\nMelyik strategiat hasznaljuk?", 0, 5);
 	}
 
 	private Warden createWarden() {
@@ -78,6 +79,12 @@ public class Main {
 				int stage2Length = readIntBetween("Hany napos legyen a masodik szakasz?", 1, Integer.MAX_VALUE);
 				int bulkSize = readIntFrom("Mekkora lepesekben szamoljon a foszamlalo?", Utilities.getDivisors(n));
 				return new ProtocolBulkWithRestart(stage1Length, stage2Length, bulkSize);
+			}
+			case 5: {
+				int stage1Length = readIntBetween("Hany napos legyen az elso szakasz?", 1, Integer.MAX_VALUE);
+				int stage2Length = readIntBetween("Hany napos legyen a masodik szakasz?", 1, Integer.MAX_VALUE);
+				int bulkSize = readIntFrom("Mekkora lepesekben szamoljon a foszamlalo?", Utilities.getDivisors(n));
+				return new ProtocolBulkWithLoop(stage1Length, stage2Length, bulkSize);
 			}
 			default:
 				throw new IllegalArgumentException("Nem ertelmezheto protokoll: " + protocolNo);

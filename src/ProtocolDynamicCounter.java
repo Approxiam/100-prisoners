@@ -5,7 +5,7 @@
  * Generally, the first person to visit the yard for the second time is to be the counter,
  * his/her task is to turn on the light and count k-1 prisoners (where k is the day he was selected as the counter).
  * The light remains on until day n, letting people know that the counter has been selected.
- * From day n+1 the single counter protocol runs, but everyone who visited the yard and seen the light off
+ * From day n+1 the single counter protocol runs, but everyone who visited the yard during the selection rounds and seen the light off
  * does nothing.
  */
 public class ProtocolDynamicCounter extends Protocol {
