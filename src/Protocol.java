@@ -1,19 +1,15 @@
 public abstract class Protocol {
+	/** The day the visiting prisoner declared victory. */
+	private int daysUntilVictory;
+	/** The first day when every prisoner has been in the yard. */
+	private int victoryThreshold;
+	private String name;
 
-	int daysUntilVictory;			//The day the visiting prisoner declared victory. 
-	int victoryTreshold;			//The first day when every prisoner has been in the yard.
-	private String protocolName;
-	
-	public Protocol(){
+	public Protocol(String txt) {
 		daysUntilVictory = 0;
-		protocolName = null;
+		name = txt;
 	}
-	
-	public Protocol(String txt){
-		daysUntilVictory = 0;
-		protocolName = txt;
-	}
-	
+
 	public abstract void simulate(Warden W);
 
 	public int getDaysUntilVictory() {
@@ -24,20 +20,33 @@ public abstract class Protocol {
 		this.daysUntilVictory = daysUntilVictory;
 	}
 
-	public int getVictoryTreshold() {
-		return victoryTreshold;
+	public int getVictoryThreshold() {
+		return victoryThreshold;
 	}
 
-	public void setVictoryTreshold(int victoryTreshold) {
-		this.victoryTreshold = victoryTreshold;
+	// TODO unused
+	// FIXME doesn't mean what the doc says: it's assigned the 1st time *a* prisoner is visiting the yard the 2nd time
+	public void setVictoryThreshold(int victoryThreshold) {
+		this.victoryThreshold = victoryThreshold;
 	}
 
-	public String getProtocolName() {
-		return protocolName;
+	public String getName() {
+		return name;
 	}
 
-	public void setProtocolName(String protocolName) {
-		this.protocolName = protocolName;
+	public void setName(String name) {
+		this.name = name;
 	}
-	
+
+	public static SimulationResult runSimulation(Warden warden, Protocol protocol, int iterationCount) {
+		SimulationResult result = new SimulationResult();
+
+		for (int i = 0; i < iterationCount; i++) {
+			protocol.simulate(warden);
+			result.accumulate(protocol.getDaysUntilVictory());
+			warden.eraseMemory();
+		}
+
+		return result;
+	}
 }

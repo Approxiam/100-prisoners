@@ -1,59 +1,58 @@
-public class ProtocolSCWithSmartDrones extends Protocol{
+/**
+ * A modification of the {@link ProtocolSingleCounter} strategy,
+ * in which even the drones count how many transitions they have seen,
+ * where each transition refers to a change in the bulb's state from being turned off to on.
+ */
+public class ProtocolSCWithSmartDrones extends Protocol {
+	private static final int ROLE_DRONE = 0;
+	private static final int ROLE_COUNTER = 1;
 
-	/*
-	 * A modification of the single counter strategy, 
-	 * in which even the drones count how many transitions they have seen, 
-	 * where each transition refers to a change in the bulb's state from being turned off to on.
-	 * 
-	 * 	Roles:
-	 *	0: Drone
-	 *	1: Counter
-	 */
-	
-	public ProtocolSCWithSmartDrones(){ 
+	public ProtocolSCWithSmartDrones() {
 		super("Egy lampaoltogato elore kivalasztva");
 	}
-	
-	public void simulate(Warden W){
-		int n = W.getNumberOfPrisoners();
-		Bulb b = new Bulb();			
-		Prisoner[] p = new Prisoner[n];	
-		for(int i = 0; i < n; i++){
-			p[i]=new Prisoner();
+
+	public void simulate(Warden warden) {
+		Bulb light = new Bulb();
+		Prisoner[] prisoners = new Prisoner[warden.getNumberOfPrisoners()];
+		for (int i = 0; i < prisoners.length; i++) {
+			prisoners[i] = new Prisoner();
+			prisoners[i].setRole(ROLE_DRONE);
 		}
-		int selected = W.returnRandom(n);	
-		p[0].setRole(1);				//Assign the role of the Counter.
-		
-		
-		do{
-			selected = W.nextPrisoner();	//Select the next prisoner that visits the yard.
-			if(p[selected].getTimesInYard() == 0){
-				victoryTreshold = W.days();
+		prisoners[0].setRole(ROLE_COUNTER); // select a pre-agreed counter
+
+		Prisoner prisoner;
+		do {
+			prisoner = prisoners[warden.pickNextPrisoner()]; // Select the next prisoner that visits the yard.
+			if (prisoner.getTimesInYard() == 0) {
+				setVictoryThreshold(warden.daysPassed());
 			}
-			p[selected].visitYard();
-			if(p[selected].getRole() == 1){		//The counter is selected.
-				if(b.getLight()){				//If the light is on,
-					p[selected].count(1);		//then the counter increments his/her count by 1
-					p[selected].turnOFF(b);		//and turns the light off.
-				}
+			prisoner.visitYard();
+			switch (prisoner.getRole()) {
+				case ROLE_COUNTER:
+					if (light.isOn()) {
+						prisoner.count(1);
+						prisoner.turnOff(light);
+					}
+					break;
+				case ROLE_DRONE:
+					if (!prisoner.isLastSeenLight() && light.isOn()) {
+						prisoner.count(1);
+					}
+					if (light.isOff() && (prisoner.getTurnOnsRemaining() > 0)) {
+						// If the light is off and the prisoner hasn't turned it on yet
+						prisoner.turnOn(light);
+					}
+					prisoner.setLastSeenLight(light.isOn());
+					if (prisoner.getCounted() == warden.getNumberOfPrisoners() - 1) {
+						// The counter wouldn't be counted otherwise.
+						prisoner.count(1);
+					}
+					break;
 			}
-			else{		//A drone is selected.
-				if(!p[selected].isLastSeenLight() && b.getLight()){
-					p[selected].count(1);
-				}
-				if(!(b.getLight()) && (p[selected].getTurnOnsRemaining() > 0)){	//If the light is off and the prisoner hasn't turned it on yet,
-					p[selected].turnON(b);										//then he/she turns it on.
-				}
-				p[selected].setLastSeenLight(b.getLight());
-				if(p[selected].getPrisonersCounted() == n-1){		//The counter wouldn't be counted otherwise.
-					p[selected].count(1);
-				}
-			}
-		} while(!(p[selected].getPrisonersCounted() == n));
-		daysUntilVictory = W.days();
-		if(p[selected].getRole() == 0){
+		} while (prisoner.getCounted() != warden.getNumberOfPrisoners());
+		setDaysUntilVictory(warden.daysPassed());
+		if (prisoner.getRole() == ROLE_DRONE) {
 			System.out.println("A gyozelmet nem a szamlalo hirdette ki, hanem az egyik okos rab.");
 		}
 	}
-
 }

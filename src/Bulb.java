@@ -1,18 +1,20 @@
-
+/**
+ * Light in the yard.
+ */
 public class Bulb {
+	/** <code>true</code> means the light is on, while <code>false</code> means it is off. */
+	private boolean state = false; // initially the light is off
 
-	boolean light;		//True means the light is on, while false means it is off.
-	
-	public Bulb(){		//Initially the light is off..
-		light = false;
+	public boolean isOn() {
+		return state;
 	}
-	
-	public boolean getLight(){
-		return light;
+	public boolean isOff() {
+		return !state;
 	}
-	
-	public void setLight(boolean value){
-		light = value;
+	public void turnOn() {
+		state = true;
 	}
-	
+	public void turnOff() {
+		state = false;
+	}
 }

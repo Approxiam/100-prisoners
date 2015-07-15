@@ -1,40 +1,44 @@
 public class Prisoner {
-	
-	int turnOnsRemaining;	//The number of times the prisoner will/should turn on the light. May depend on strategy.
-	int prisonersCounted;	//The prisoner knows, that at least this many prisoners visited the yard.
-	int timesInYard;	//The prisoner visited the yard this many times.
-	int role;		//The role of this prisoner. Depends on strategy.
-	boolean lastSeenLight;	//The state of the light the last time the prisoner visited the room.
-	
-	public Prisoner(){ 
+	/** The number of times the prisoner will/should turn on the light. May depend on strategy. */
+	private int turnOnsRemaining;
+	/** The prisoner knows, that at least this many prisoners visited the yard. */
+	private int prisonersCounted;
+	/** The prisoner visited the yard this many times. */
+	private int timesInYard;
+	/** The role of this prisoner. Depends on strategy. */
+	private int role;
+	/** The state of the light the last time the prisoner visited the room. */
+	private boolean lastSeenLight;
+
+	public Prisoner() {
 		turnOnsRemaining = 1;
 		prisonersCounted = 1;
 		timesInYard = 0;
 		role = 0;
 		lastSeenLight = false;
 	}
-	
-	public void visitYard(){
+
+	public void visitYard() {
 		timesInYard++;
 	}
 
-	public void count(int a){
+	public void count(int a) {
 		prisonersCounted += a;
 	}
-	
-	public void doNothing(){
+
+	public void doNothing() {
 	}
-	
-	public void turnON(Bulb b){ 
-		b.setLight(true);
+
+	public void turnOn(Bulb light) {
+		light.turnOn();
 		turnOnsRemaining--;
 	}
-	
-	public void turnOFF(Bulb b){
-		b.setLight(false);
+
+	public void turnOff(Bulb light) {
+		light.turnOff();
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return "prisoner";
 	}
 
@@ -46,11 +50,11 @@ public class Prisoner {
 		this.turnOnsRemaining = turnOnsRemaining;
 	}
 
-	public int getPrisonersCounted() {
+	public int getCounted() {
 		return prisonersCounted;
 	}
 
-	public void setPrisonersCounted(int prisonersCounted) {
+	public void setCounted(int prisonersCounted) {
 		this.prisonersCounted = prisonersCounted;
 	}
 
