@@ -108,14 +108,14 @@ public class SwingGUI extends JFrame {
 	private JPanel buildStrategies() {
 		JPanel strategies = new JPanel();
 		{
-			strategies.setLayout(new GridLayout(4, 1));
+			strategies.setLayout(new GridLayout(0, 1));
 			strategies.setBorder(createTitledBorder("Stratégiák"));
 
 			strategies.add(createStrategy("Egy lámpaoltogató", VK_L, ProtocolSingleCounter.class));
 			strategies.add(createStrategy("Egy lámpaoltogató, okos rabok", VK_O, ProtocolSCWithSmartDrones.class));
 			strategies.add(createStrategy("Dinamikusan választott lámpaoltogató", VK_D, ProtocolDynamicCounter.class));
 			strategies.add(createStrategy("Kétfázisú számlálás", VK_K, ProtocolBulkWithLoop.class));
-			strategies.add(createStrategy("Kétfázisú számlálás (újraindítással)", VK_U, ProtocolBulkWithRestart.class));
+			strategies.add(createStrategy("Kétfázisú számlálás (újraindítással)", VK_I, ProtocolBulkWithRestart.class));
 
 			((JRadioButton)strategies.getComponent(0)).setSelected(true);
 		}
@@ -140,7 +140,10 @@ public class SwingGUI extends JFrame {
 
 			JPanel iterationCountLayout = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
 			{
-				iterationCountLayout.add(new JLabel("Futások száma:"));
+				JLabel lblIterationCount = new JLabel("Futások száma:");
+				lblIterationCount.setDisplayedMnemonic(KeyEvent.VK_F);
+				lblIterationCount.setLabelFor(txtIterationCount);
+				iterationCountLayout.add(lblIterationCount);
 				txtIterationCount.setColumns(6);
 				txtIterationCount.setHorizontalAlignment(SwingConstants.RIGHT);
 				iterationCountLayout.add(txtIterationCount);
@@ -208,23 +211,37 @@ public class SwingGUI extends JFrame {
 			bulkProtocolUI.setVisible(false);
 
 			GridBagConstraints gbc;
+			JLabel label;
 
 			gbc = new GridBagConstraints();
 			gbc.anchor = GridBagConstraints.LINE_START;
 			gbc.ipadx = 8;
 			gbc.gridx = 0;
+
 			gbc.gridy = 0;
-			bulkProtocolUI.add(new JLabel("Első szakasz:"), gbc);
+			label = new JLabel("Első szakasz:");
+			label.setLabelFor(txtStage1Length);
+			label.setDisplayedMnemonic(KeyEvent.VK_E);
+			bulkProtocolUI.add(label, gbc);
+
 			gbc.gridy++;
-			bulkProtocolUI.add(new JLabel("Második szakasz:"), gbc);
+			label = new JLabel("Második szakasz:");
+			label.setLabelFor(txtStage2Length);
+			label.setDisplayedMnemonic(KeyEvent.VK_M);
+			bulkProtocolUI.add(label, gbc);
+
 			gbc.gridy++;
-			bulkProtocolUI.add(new JLabel("Lépésköz:"), gbc);
+			label = new JLabel("Lépésköz:");
+			label.setLabelFor(txtBulkSize);
+			label.setDisplayedMnemonic(KeyEvent.VK_P);
+			bulkProtocolUI.add(label, gbc);
 
 			gbc = new GridBagConstraints();
 			gbc.anchor = GridBagConstraints.LINE_START;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.weightx = 1;
 			gbc.gridx = 1;
+
 			gbc.gridy = 0;
 			bulkProtocolUI.add(txtStage1Length, gbc);
 			gbc.gridy++;
@@ -233,17 +250,19 @@ public class SwingGUI extends JFrame {
 			bulkProtocolUI.add(txtBulkSize, gbc);
 		}
 
-		uiSpecialParams.add(new JLabel(""), ProtocolSingleCounter.class.getName());
-		uiSpecialParams.add(new JLabel(""), ProtocolDynamicCounter.class.getName());
-		uiSpecialParams.add(new JLabel(""), ProtocolSCWithSmartDrones.class.getName());
-		uiSpecialParams.add(bulkProtocolUI, ProtocolBulkWithLoop.class.getName());
-		uiSpecialParams.add(bulkProtocolUI, ProtocolBulkWithRestart.class.getName());
+		uiSpecialParams.add(bulkProtocolUI);
+		Component noExtras = uiSpecialParams.add(new JLabel("Nincsenek extra paraméterek")); // should be last add
+		modSpecialParams.addLayoutComponent(noExtras, ProtocolSingleCounter.class.getName());
+		modSpecialParams.addLayoutComponent(noExtras, ProtocolDynamicCounter.class.getName());
+		modSpecialParams.addLayoutComponent(noExtras, ProtocolSCWithSmartDrones.class.getName());
+		modSpecialParams.addLayoutComponent(bulkProtocolUI, ProtocolBulkWithLoop.class.getName());
+		modSpecialParams.addLayoutComponent(bulkProtocolUI, ProtocolBulkWithRestart.class.getName());
 
 		return uiSpecialParams;
 	}
 
 	private JPanel buildResults() {
-		JPanel results = new JPanel(new GridLayout(5, 3, 4, 4));
+		JPanel results = new JPanel(new GridLayout(0, 3, 4, 4));
 		results.setBorder(createTitledBorder("Eredmények"));
 
 		((JLabel)results.add(new JLabel("Count"))).setHorizontalAlignment(SwingConstants.CENTER);
