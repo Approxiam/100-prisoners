@@ -28,7 +28,7 @@ public class Warden {
 		int next;
 		if (hasPredeterminedHistory()) {
 			next = history.get(counter);
-		} else { // once the Warden runs out of predetermined prisoners to send, they will resort to random selection
+		} else { // once the Warden runs out of predetermined prisoners to send, he will resort to random selection
 			next = pickRandomPrisoner();
 			history.add(next);
 		}
