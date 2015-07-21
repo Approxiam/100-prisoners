@@ -5,7 +5,7 @@ import java.util.*;
  */
 public class ProtocolBulkWithLoop extends Protocol {
 	private static final int ROLE_DRONE = 0;
-	/** Assistant Counters are responsible for n bulk counts (n > 0), their role is >= 1 */
+	/** Assistant Counters are responsible for m bulk counts (m > 0), their role is >= 1 */
 	private static final int ROLE_ASSISTANT_COUNTER_DEFAULT = 1;
 	private static final int ROLE_HEAD_COUNTER = -1;
 
@@ -25,7 +25,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 
 		Bulb light = new Bulb();
 		Prisoner[] prisoners = new Prisoner[n];
-		reset(warden, prisoners);
+		preset(warden, prisoners); //assign roles randomly
 
 		Prisoner prisoner;
 		do {
@@ -50,7 +50,7 @@ public class ProtocolBulkWithLoop extends Protocol {
 		setDaysUntilVictory(warden.daysPassed());
 	}
 
-	private void reset(Warden warden, Prisoner[] prisoners) {
+	private void preset(Warden warden, Prisoner[] prisoners) {
 		int n = warden.getNumberOfPrisoners();
 		assert (n - 1) % bulkSize == 0 : "bulkSize=" + bulkSize + " is not the divisor of n-1=" + (n - 1);
 		final int numberOfAssistants = (n - 1) / bulkSize; // bulkSize was made to be a divisor of n-1 at input
