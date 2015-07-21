@@ -18,7 +18,7 @@ public class ProtocolSCWithSmartDrones extends Protocol {
 			prisoners[i] = new Prisoner();
 			prisoners[i].setRole(ROLE_DRONE);
 		}
-		prisoners[0].setRole(ROLE_COUNTER); // select a pre-agreed counter
+		prisoners[warden.pickRandomPrisoner()].setRole(ROLE_COUNTER);
 
 		Prisoner prisoner;
 		do {
