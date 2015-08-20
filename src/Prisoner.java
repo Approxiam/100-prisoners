@@ -1,4 +1,8 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class Prisoner {
+	private String name;
 	/** The number of times the prisoner will/should turn on the light. May depend on strategy. */
 	private int turnOnsRemaining;
 	/** The prisoner knows, that at least this many prisoners visited the yard. */
@@ -9,8 +13,20 @@ public class Prisoner {
 	private int role;
 	/** The state of the light the last time the prisoner visited the room. */
 	private boolean lastSeenLight;
-
+	/**Integer values in the mind of the prisoner. */
+	private Map<String, Integer> mind = new HashMap<>(); 
+	
 	public Prisoner() {
+		name = "prisoner";
+		turnOnsRemaining = 1;
+		prisonersCounted = 1;
+		timesInYard = 0;
+		role = 0;
+		lastSeenLight = false;
+	}
+	
+	public Prisoner(String str) {
+		name = str;
 		turnOnsRemaining = 1;
 		prisonersCounted = 1;
 		timesInYard = 0;
@@ -18,6 +34,25 @@ public class Prisoner {
 		lastSeenLight = false;
 	}
 
+	public void note(String key, int value){
+		mind.put(key, value);
+	}
+		
+	public int recall(String key){
+		if(mind.containsKey(key)){
+			return mind.get(key);
+		}
+		return 0;
+	}
+	
+	public void modify(String key, int value){
+		if(mind.containsKey(key)){
+			mind.put(key, mind.get(key) + value);
+		} else {
+			mind.put(key, value);
+		}
+	}
+		
 	public void visitYard() {
 		timesInYard++;
 	}
@@ -39,7 +74,7 @@ public class Prisoner {
 	}
 
 	public String toString() {
-		return "prisoner";
+		return name;
 	}
 
 	public int getTurnOnsRemaining() {

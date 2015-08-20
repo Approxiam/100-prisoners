@@ -48,7 +48,11 @@ public class Warden {
 	public int daysPassed() {
 		return counter;
 	}
-
+	
+	public void setCounter(int c){
+		this.counter = c;
+	}
+	
 	public int pickRandomPrisoner() {
 		return random.nextInt(numberOfPrisoners);
 	}
