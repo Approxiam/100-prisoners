@@ -132,9 +132,11 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		new Main().run(System.in);
-		//Protocol.runSimulation(new Warden(10), new ProtocolBulkWithRestart(2, 4, 3), 1000);
-		//Protocol.runSimulation(new Warden(Arrays.asList(2, 3, 1, 7, 6, 4)), new ProtocolSingleCounter(), 1);
+		//new Main().run(System.in);
+		SimulationResult sim = Protocol.runSimulation(new Warden(100), new ProtocolBulkWithLoopSRWM(2600, 2700, 11), 10000);
+		System.out.println("atlag: " + sim.getAvgDays());
+		System.out.println("min: " + sim.getMinDays());
+		System.out.println("max: " + sim.getMaxDays());
 		//SwingGUI.main(args);
 	}
 }

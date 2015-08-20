@@ -1,3 +1,4 @@
+
 public abstract class Protocol {
 	/** The day the visiting prisoner declared victory. */
 	private int daysUntilVictory;
