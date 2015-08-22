@@ -296,10 +296,8 @@ public class ProtocolBulkWithLoopSRWM extends Protocol {
 	}
 	
 	private void shortenCycle(int lowerBound){
-		if(currentStageOneLength > 2*lowerBound){
+		if((currentStageOneLength/2 > lowerBound) && (currentCycleLength/2 - currentStageOneLength/2 > lowerBound)){
 			this.currentStageOneLength = currentStageOneLength/2;
-		}
-		if(currentCycleLength > 2*lowerBound){
 			this.currentCycleLength = currentCycleLength/2;
 		}
 	}
