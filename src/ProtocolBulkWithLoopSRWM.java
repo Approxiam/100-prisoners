@@ -12,12 +12,16 @@ public class ProtocolBulkWithLoopSRWM extends Protocol {
 	private final int stageOneLength;
 	private final int cycleLength;
 	private final int bulkSize;
+	private int currentStageOneLength;
+	private int currentCycleLength;
 
 	public ProtocolBulkWithLoopSRWM(int stageOneLength, int stageTwoLength, int bulkSize) {
 		super("Ketfazisu szamlalas");
 		this.stageOneLength = stageOneLength;
 		this.cycleLength = stageOneLength + stageTwoLength;
 		this.bulkSize = bulkSize;
+		this.currentCycleLength = cycleLength;
+		this.currentStageOneLength = stageOneLength;
 	}
 
 	public void simulate(Warden warden) {
@@ -33,21 +37,29 @@ public class ProtocolBulkWithLoopSRWM extends Protocol {
 				setVictoryThreshold(warden.daysPassed());
 			}
 			prisoner.visitYard();
-			if ((warden.daysPassed() % cycleLength > 0) && (warden.daysPassed() % cycleLength < stageOneLength)) {
+			if(warden.daysPassed() > 10000000){
+				System.out.println("Hiba!");
+				break;
+			}
+			if ((warden.daysPassed() % currentCycleLength > 0) && (warden.daysPassed() % currentCycleLength < currentStageOneLength)) {
 				doFirstStage(light, prisoner); // except for the last day
-			} else if (warden.daysPassed() % cycleLength == stageOneLength) {
+			} else if (warden.daysPassed() % currentCycleLength == currentStageOneLength) {
 				doFirstStageLastDay(light, prisoner);
-			} else if (warden.daysPassed() % cycleLength != 0) {
+			} else if (warden.daysPassed() % currentCycleLength != 0) {
 				doSecondStage(light, prisoner); // except for the last day
-			} else if (warden.daysPassed() % cycleLength == 0) {
+			} else if (warden.daysPassed() % currentCycleLength == 0) {
 				// last day of second stage (i.e. the cycle)
 				doSecondStageLastDay(light, prisoner);
+				shortenCycle();
 			}
 		} while (prisoner.getCounted() != n);    // repeat until victory can be declared
 		setDaysUntilVictory(warden.daysPassed());
+		//System.out.println(warden.daysPassed());
 	}
 
 	private void preset(Warden warden, Prisoner[] prisoners) {
+		currentCycleLength = cycleLength;
+		currentStageOneLength = stageOneLength;
 		int n = warden.getNumberOfPrisoners();
 		assert (n - 1) % bulkSize == 0 : "bulkSize=" + bulkSize + " is not the divisor of n-1=" + (n - 1);
 		final int numberOfAssistants = (n - 1) / bulkSize; // bulkSize was made to be a divisor of n-1 at input
@@ -280,6 +292,13 @@ public class ProtocolBulkWithLoopSRWM extends Protocol {
 					prisoner.doNothing();
 				}
 				break;
+		}
+	}
+	
+	private void shortenCycle(){
+		if(currentCycleLength > 4){
+			this.currentStageOneLength = currentStageOneLength/2;
+			this.currentCycleLength = currentCycleLength/2;
 		}
 	}
 } 

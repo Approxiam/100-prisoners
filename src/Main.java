@@ -133,7 +133,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		//new Main().run(System.in);
-		SimulationResult sim = Protocol.runSimulation(new Warden(100), new ProtocolBulkWithLoopSRWM(2600, 2700, 11), 10000);
+		SimulationResult sim = Protocol.runSimulation(new Warden(100), new ProtocolBulkWithLoopSRWM (2600, 2700, 11), 10000);
 		System.out.println("atlag: " + sim.getAvgDays());
 		System.out.println("min: " + sim.getMinDays());
 		System.out.println("max: " + sim.getMaxDays());
