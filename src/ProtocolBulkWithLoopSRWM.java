@@ -50,7 +50,7 @@ public class ProtocolBulkWithLoopSRWM extends Protocol {
 			} else if (warden.daysPassed() % currentCycleLength == 0) {
 				// last day of second stage (i.e. the cycle)
 				doSecondStageLastDay(light, prisoner);
-				shortenCycle();
+				shortenCycle(n);
 			}
 		} while (prisoner.getCounted() != n);    // repeat until victory can be declared
 		setDaysUntilVictory(warden.daysPassed());
@@ -295,9 +295,11 @@ public class ProtocolBulkWithLoopSRWM extends Protocol {
 		}
 	}
 	
-	private void shortenCycle(){
-		if(currentCycleLength > 4){
+	private void shortenCycle(int lowerBound){
+		if(currentStageOneLength > 2*lowerBound){
 			this.currentStageOneLength = currentStageOneLength/2;
+		}
+		if(currentCycleLength > 2*lowerBound){
 			this.currentCycleLength = currentCycleLength/2;
 		}
 	}
